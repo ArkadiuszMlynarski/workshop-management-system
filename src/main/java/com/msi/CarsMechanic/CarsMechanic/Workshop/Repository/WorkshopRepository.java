@@ -11,8 +11,7 @@ import java.util.Optional;
 @Repository
 public interface WorkshopRepository extends CrudRepository<Workshop, Long> {
 
-    @Override
-    Iterable<Workshop> findAll();
-
+    Workshop getById(Long id);
+    Iterable<Workshop> findAllByOwner(String username);
     List<Workshop> findByAddress(String address);
 }
