@@ -28,8 +28,11 @@ public class AdminController {
     // USERS
 
     @GetMapping("/getUsers")
-    public  Iterable<User> getAllUsers(Principal principal){
-        System.out.println("bierze userow");return userService.findAllUsers(principal.getName());
+    public  Iterable<User> getAllUsers(@RequestParam(defaultValue = "0") Integer pageNo,
+                                       @RequestParam(defaultValue = "5") Integer pageSize,
+                                       @RequestParam(defaultValue = "id") String sortBy,
+                                       Principal principal){
+        return userService.findAllUsers(pageNo, pageSize, sortBy, principal.getName());
     }
 
     @DeleteMapping("/deleteUserById/{id}")

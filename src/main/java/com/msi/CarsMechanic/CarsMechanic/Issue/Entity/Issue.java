@@ -2,11 +2,17 @@ package com.msi.CarsMechanic.CarsMechanic.Issue.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.msi.CarsMechanic.CarsMechanic.Offer.Entity.Offer;
 import com.msi.CarsMechanic.CarsMechanic.User.Entity.User;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -17,6 +23,17 @@ public class Issue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, unique = true)
     private Long issueId;
+
+    @Column
+    @NotBlank(message = "Title cant be empty")
+    private String title;
+
+    @Column
+    @NotBlank(message = "Type cant be empty")
+    private String type;
+
+    @Column(columnDefinition = "varchar(255) default 'TO DO'", nullable = false)
+    private String status;
 
     @Column
     @NotBlank(message = "Description cant be empty")
@@ -34,6 +51,12 @@ public class Issue {
     @JsonFormat(pattern = "yyyy-MM-dd\nHH:mm:ss")
     private LocalDateTime creationDate;
 
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Belgrade")
+    private Date dateFrom;
+
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Belgrade")
+    private Date dateTo;
+
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "issue")
     @JsonIgnore
     private Backlog backlog;
@@ -45,13 +68,61 @@ public class Issue {
 
     private String issueLeader;
 
-//    //to do DTO
-//    @ManyToOne
-//    @JoinColumn(name="user_id")
-//    private User author;
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "issue", orphanRemoval = true)
+    @Fetch(value = FetchMode.SUBSELECT)
+    private List<Offer> offers = new ArrayList<>();
+
 
 
     public Issue() {
+    }
+
+    public List<Offer> getOffers() {
+        return offers;
+    }
+
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Date getDateFrom() {
+        return dateFrom;
+    }
+
+    public void setDateFrom(Date dateFrom) {
+        this.dateFrom = dateFrom;
+    }
+
+    public Date getDateTo() {
+        return dateTo;
+    }
+
+    public void setDateTo(Date dateTo) {
+        this.dateTo = dateTo;
     }
 
     public Long getIssueId() {
@@ -86,13 +157,6 @@ public class Issue {
         this.localization = localization;
     }
 
-//    public User getAuthor() {
-//        return author;
-//    }
-//
-//    public void setAuthor(User author) {
-//        this.author = author;
-//    }
 
     public LocalDateTime getCreationDate() {
         return creationDate;

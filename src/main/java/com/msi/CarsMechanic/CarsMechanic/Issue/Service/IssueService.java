@@ -6,7 +6,9 @@ import com.msi.CarsMechanic.CarsMechanic.Issue.Repository.BacklogRepository;
 import com.msi.CarsMechanic.CarsMechanic.Issue.Repository.IssueRepository;
 import com.msi.CarsMechanic.CarsMechanic.Issue.exceptions.IssueIdException;
 import com.msi.CarsMechanic.CarsMechanic.Issue.exceptions.IssueNotFoundException;
+import com.msi.CarsMechanic.CarsMechanic.User.Entity.Role;
 import com.msi.CarsMechanic.CarsMechanic.User.Entity.User;
+import com.msi.CarsMechanic.CarsMechanic.User.Repository.RoleRepository;
 import com.msi.CarsMechanic.CarsMechanic.User.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,9 @@ public class IssueService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     public Issue saveOrUpdateIssue(Issue issue, String username){
 
@@ -46,6 +51,7 @@ public class IssueService {
             issue.setBacklog(backlog);
             backlog.setIssue(issue);
             backlog.setIssue_id(issue.getIssueId());
+            issue.setStatus("TO DO");
         }
 
         //updating existing issue
@@ -53,6 +59,9 @@ public class IssueService {
             issue.setBacklog(backlogRepository.findByTaskid(issue.getIssueId()));
         }
 
+        if(issue.getDateFrom().after(issue.getDateTo())){
+            throw new IssueNotFoundException("Start date is after end date");
+        }
         return issueRepository.save(issue);
     }
 
@@ -68,10 +77,13 @@ public class IssueService {
     public Issue findByIssueId(Long id, String username) {
 
         Issue issue = issueRepository.findByIssueId(id);
+        User user = userRepository.findByUsername(username);
+        Role role = roleRepository.findByName("WORKSHOPOWNER");
 
-        if(issue == null){
-            throw new IssueIdException("Issue with ID '"+id+"' not found");
-        }
+        if(issue == null) throw new IssueIdException("Issue with ID '"+id+"' not found");
+
+        //Obejscie dla workshopownera na podglad issue innych uzytkownikow
+        if(user.getRoles().contains(role)) return issue;
 
         if(!issue.getIssueLeader().equals(username)){
             throw new IssueNotFoundException("Issue not found in your account");
@@ -79,5 +91,11 @@ public class IssueService {
 
 
         return issue;
+    }
+
+
+    //methods for ownerController
+    public Iterable<Issue> findAllIssuesForOwner(String username){
+        return issueRepository.findAll();
     }
 }

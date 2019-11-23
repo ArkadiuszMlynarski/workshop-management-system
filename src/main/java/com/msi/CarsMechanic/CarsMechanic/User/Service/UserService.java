@@ -7,6 +7,10 @@ import com.msi.CarsMechanic.CarsMechanic.User.Entity.User;
 import com.msi.CarsMechanic.CarsMechanic.User.Repository.RoleRepository;
 import com.msi.CarsMechanic.CarsMechanic.User.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -114,8 +118,10 @@ public class UserService {
     }
 
 
-    public Iterable<User> findAllUsers(String username){
-            return userRepository.findAll();
+    public Iterable<User> findAllUsers(Integer pageNo, Integer pageSize, String sortBy, String username){
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<User> pagedResult = userRepository.findAll(paging);
+            return pagedResult.getContent();
         }
 
     public void deleteUserById(Long id, String username){

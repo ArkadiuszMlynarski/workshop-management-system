@@ -46,6 +46,7 @@ public class Workshop {
     @JsonIgnore
     private User user;
 
+
     private String owner;
 
     public Workshop() {

@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface WorkshopRepository extends CrudRepository<Workshop, Long> {
 
     Workshop getById(Long id);
+    Workshop findByName(String name);
     Iterable<Workshop> findAllByOwner(String username);
     List<Workshop> findByAddress(String address);
 }

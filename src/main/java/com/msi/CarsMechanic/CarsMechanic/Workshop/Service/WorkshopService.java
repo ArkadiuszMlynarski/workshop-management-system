@@ -38,11 +38,13 @@ public class WorkshopService {
 //        }
 
         //TODO weryfikacja czy edytowany workshop nalezy do zalogowanego
+        //TODO poki co przy edicie zmienia accepted na false
         User user = userRepository.findByUsername(username);
 
         workshop.setOwner(user.getUsername());
         workshop.setUser(user);
-        workshop.setAccepted(false);
+            workshop.setAccepted(false);
+
         //Przypisanie tworzacemu WORKSHOP roli WORKSHOPOWNER, gdy jej nie posiada
         if(!user.getRoles().contains(roleRepository.findByName("WORKSHOPOWNER"))){
             Role role = roleRepository.findByName("WORKSHOPOWNER");
