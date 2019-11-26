@@ -44,4 +44,10 @@ public class OfferController {
         offerService.declineOfferById(offerId, principal.getName());
         return new ResponseEntity<String>("Offer with ID: " + offerId + " declined.", HttpStatus.OK);
     }
+
+    @PostMapping("/accept/{offerId}")
+    public ResponseEntity<?> acceptOffer(@PathVariable Long offerId, Principal principal) {
+        offerService.acceptOfferById(offerId, principal.getName());
+        return new ResponseEntity<String>("Offer with ID: " + offerId + " accepted.", HttpStatus.OK);
+    }
 }

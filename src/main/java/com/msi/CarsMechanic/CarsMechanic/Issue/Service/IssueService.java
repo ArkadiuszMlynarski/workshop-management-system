@@ -32,6 +32,7 @@ public class IssueService {
 
         if(issue.getIssueId() != null){
             Issue existingIssue = issueRepository.findByIssueId(issue.getIssueId());
+            issue.setAcceptedOffer(existingIssue.getAcceptedOffer());  //przy edicie nie usuwa acceptedOffer
 
             if(existingIssue != null && (!existingIssue.getIssueLeader().equals(username))){
                 throw new IssueNotFoundException("Issue not found in your account");
@@ -96,6 +97,11 @@ public class IssueService {
 
     //methods for ownerController
     public Iterable<Issue> findAllIssuesForOwner(String username){
-        return issueRepository.findAll();
+        return issueRepository.findAllByStatus("TO DO");
+    }
+
+    //zwraca wszystkie issues, ktore maja oferte zlozona przez zalogowanego workshopownera
+    public Iterable<Issue> findAllIssuesOfferedByUser(String username){
+        return issueRepository.findAllByOffers_OfferedByUser(username);
     }
 }

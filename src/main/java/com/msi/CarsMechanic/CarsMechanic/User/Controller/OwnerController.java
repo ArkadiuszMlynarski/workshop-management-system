@@ -23,4 +23,9 @@ public class OwnerController {
         return issueService.findAllIssuesForOwner(principal.getName());
     }
 
+    @GetMapping("/getIssuesOffered")
+    public Iterable<Issue> getAllIssuesOffered(Principal principal) {
+        return issueService.findAllIssuesOfferedByUser(principal.getName());
+    }
+
 }

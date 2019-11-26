@@ -61,20 +61,31 @@ public class Issue {
     @JsonIgnore
     private Backlog backlog;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="user_id")
     @JsonIgnore
     private User user;
 
     private String issueLeader;
 
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER, mappedBy = "issue", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "issue", orphanRemoval = true)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Offer> offers = new ArrayList<>();
 
+    @OneToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "acceptedOfferId", referencedColumnName = "offerId")
+    private Offer acceptedOffer;
 
 
     public Issue() {
+    }
+
+    public Offer getAcceptedOffer() {
+        return acceptedOffer;
+    }
+
+    public void setAcceptedOffer(Offer acceptedOffer) {
+        this.acceptedOffer = acceptedOffer;
     }
 
     public List<Offer> getOffers() {

@@ -56,6 +56,8 @@ public class WorkshopController {
         return new ResponseEntity<>(workshop, HttpStatus.OK);
     }
 
+
+
 //    @DeleteMapping("/deleteById/{id}")
 //    public ResponseEntity<?> deleteWorkshopById(@PathVariable Long id){
 //        workshopService.deleteWorkshopById(id);

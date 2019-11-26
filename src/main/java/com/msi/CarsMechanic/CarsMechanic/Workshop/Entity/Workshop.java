@@ -2,13 +2,18 @@ package com.msi.CarsMechanic.CarsMechanic.Workshop.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.msi.CarsMechanic.CarsMechanic.Offer.Entity.Offer;
 import com.msi.CarsMechanic.CarsMechanic.User.Entity.User;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Workshop {
@@ -41,15 +46,28 @@ public class Workshop {
     @JsonFormat(pattern = "yyyy-MM-dd\nHH:mm:ss")
     private LocalDateTime creationDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="user_id")
     @JsonIgnore
     private User user;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "workshop", orphanRemoval = true)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonIgnore
+    private List<Offer> offers = new ArrayList<>();
 
 
     private String owner;
 
     public Workshop() {
+    }
+
+    public List<Offer> getOffers() {
+        return offers;
+    }
+
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
     }
 
     public Long getId() {

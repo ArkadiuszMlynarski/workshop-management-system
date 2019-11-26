@@ -3,6 +3,7 @@ package com.msi.CarsMechanic.CarsMechanic.Offer.Entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.msi.CarsMechanic.CarsMechanic.Issue.Entity.Issue;
+import com.msi.CarsMechanic.CarsMechanic.Workshop.Entity.Workshop;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -28,20 +29,42 @@ public class Offer {
     @NotNull(message = "Estimated time is required")
     private Long estTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="issueId")
     @JsonIgnore
     private Issue issue;
 
+    @ManyToOne
+    @JoinColumn(name="workshopId", referencedColumnName="id")
+    private Workshop workshop;
+
     private String offeredByUser;
 
-    @NotBlank(message = "Workshop is required")
-    private String offeredByWorkshop;
+    @NotNull(message = "Workshop id is required")
     private Long offeredByWorkshopId;
 
+    @OneToOne(mappedBy = "acceptedOffer")
+    @JsonIgnore
+    private Issue acceptedOffer;
 
 
     public Offer() {
+    }
+
+    public Issue getAcceptedOffer() {
+        return acceptedOffer;
+    }
+
+    public void setAcceptedOffer(Issue acceptedOffer) {
+        this.acceptedOffer = acceptedOffer;
+    }
+
+    public Workshop getWorkshop() {
+        return workshop;
+    }
+
+    public void setWorkshop(Workshop workshop) {
+        this.workshop = workshop;
     }
 
     public Long getOfferedByWorkshopId() {
@@ -50,14 +73,6 @@ public class Offer {
 
     public void setOfferedByWorkshopId(Long offeredByWorkshopId) {
         this.offeredByWorkshopId = offeredByWorkshopId;
-    }
-
-    public String getOfferedByWorkshop() {
-        return offeredByWorkshop;
-    }
-
-    public void setOfferedByWorkshop(String offeredByWorkshop) {
-        this.offeredByWorkshop = offeredByWorkshop;
     }
 
     public String getOfferedByUser() {

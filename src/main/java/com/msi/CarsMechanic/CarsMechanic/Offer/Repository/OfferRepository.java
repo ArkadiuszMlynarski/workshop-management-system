@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface OfferRepository extends CrudRepository<Offer, Long> {
 
     Offer findByOfferId(Long id);
-
+    Offer findByOfferedByUser(String username);
     Iterable<Offer> findAllByIssue_IssueIdOrderByOfferId(Long id);
 
 }
