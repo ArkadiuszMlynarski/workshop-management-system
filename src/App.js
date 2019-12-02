@@ -42,6 +42,8 @@ import OtherIssues from "./components/Workshop/Issues/Lists/OtherIssues";
 import AllIssues from "./components/Workshop/Issues/Lists/AllIssues";
 import AddOffer from "./components/Issue/IssueBoard/AddOffer";
 import OfferedList from "./components/Workshop/Offered/OfferedList";
+import ReportedOpinions from "./components/AdminPanel/Opinions/ReportedOpinions";
+import BannedOpinions from "./components/AdminPanel/Opinions/BannedOpinions";
 
 const jwtToken = localStorage.jwtToken;
 if (jwtToken) {
@@ -138,6 +140,16 @@ class App extends Component {
                 exact
                 path="/admin/userProfile/:id"
                 component={UserProfile}
+              />
+              <AdminRoute
+                exact
+                path="/admin/reportedOpinions"
+                component={ReportedOpinions}
+              />
+              <AdminRoute
+                exact
+                path="/admin/bannedOpinions"
+                component={BannedOpinions}
               />
 
               {

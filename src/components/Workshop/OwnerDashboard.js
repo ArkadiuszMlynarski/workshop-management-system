@@ -20,6 +20,8 @@ class OwnerDashboard extends Component {
     const { workshops } = this.props.workshop;
     const { issues } = this.props.issue;
     const { issuesOffered } = this.props.issue;
+    const { user } = this.props.security;
+
     let allCount = workshops.length;
     let pendingCount = workshops.filter(item => item.accepted === false).length;
     let acceptedCount = workshops.filter(item => item.accepted === true).length;
@@ -33,20 +35,30 @@ class OwnerDashboard extends Component {
           })
         )
     );
+    var lastIssueDate = "--";
     if (lastIssue.length !== 0) {
-      var lastIssueDate = lastIssue[0].creationDate;
+      lastIssueDate = lastIssue[0].creationDate;
     }
 
-    let allOfferedCount = issuesOffered.length;
     let offeredPendingCount = issuesOffered.filter(
       item => item.status === "TO DO"
     ).length;
     let offeredInprogressCount = issuesOffered.filter(
-      item => item.status === "IN PROGRESS"
+      item =>
+        item.status === "IN PROGRESS" &&
+        item.acceptedOffer.offeredByUser === user.username
     ).length;
-    let offeredDoneCount = issuesOffered.filter(item => item.status === "DONE")
-      .length;
+    let offeredDoneCount = issuesOffered.filter(
+      item =>
+        item.status === "DONE" &&
+        item.acceptedOffer.offeredByUser === user.username
+    ).length;
 
+    var allOfferedCount = 1;
+    if (offeredPendingCount + offeredInprogressCount + offeredDoneCount > 0) {
+      allOfferedCount =
+        offeredPendingCount + offeredInprogressCount + offeredDoneCount;
+    }
     return (
       <div className="container">
         <h1 className="display-4 text-center" style={{ paddingBottom: "40px" }}>
@@ -139,11 +151,14 @@ class OwnerDashboard extends Component {
               </div>
               <div className="right-col col-lg-6 d-flex align-items-center">
                 <div className="time col-lg-12">
-                  <div className="float-left">
+                  <div className="float-left" style={{ paddingLeft: "70px" }}>
                     Issues: <b>{issues.length}</b>
                   </div>{" "}
-                  <div className="float-right">
-                    Last created issue: <i>{lastIssueDate}</i>
+                  <div className="float-right" style={{ paddingRight: "70px" }}>
+                    Last created issue:{" "}
+                    <b>
+                      <i>{lastIssueDate}</i>
+                    </b>
                   </div>
                 </div>
               </div>
@@ -239,12 +254,14 @@ OwnerDashboard.propTypes = {
   getOwnerWorkshops: PropTypes.func.isRequired,
   issue: PropTypes.object.isRequired,
   getAllIssues: PropTypes.func.isRequired,
+  security: PropTypes.object.isRequired,
   getAllIssuesOffered: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   workshop: state.workshop,
-  issue: state.issue
+  issue: state.issue,
+  security: state.security
 });
 
 export default connect(

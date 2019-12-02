@@ -30,7 +30,7 @@ export default class OfferedIssueItem extends Component {
             to={`../issueBoard/${issue.issueId}`}
             className="cart-item-product"
           >
-            <div className="cart-item-product-thumb">
+            <div className="cart-item-product-thumb" style={{ width: "100px" }}>
               <img src={image} alt="im" />
             </div>
             <div
@@ -38,23 +38,20 @@ export default class OfferedIssueItem extends Component {
               style={{ paddingLeft: "25px" }}
             >
               <h4 className="cart-item-product-title">{issue.title}</h4>
-              <span>
+              <span style={{ lineHeight: "15px" }}>
                 <strong>Type:</strong> {issue.type}
               </span>
-              <span>
+              <span style={{ lineHeight: "15px" }}>
                 <strong>Car:</strong> {issue.carModel}
               </span>
-              <span>
+              <span style={{ lineHeight: "15px" }}>
                 <strong>Description:</strong> {issue.description}
+              </span>
+              <span style={{ lineHeight: "15px" }}>
+                <strong>Localization:</strong> {issue.localization}
               </span>
             </div>
           </Link>
-        </div>
-        <div className=" my-3 text-center">
-          <div className="cart-item-label">Localization</div>
-          <span className="text-xl font-weight-medium">
-            {issue.localization}
-          </span>
         </div>
         <div className=" my-3 text-center">
           <div className="cart-item-label">Start date</div>

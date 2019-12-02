@@ -28,3 +28,4 @@ export const ACCEPT_WORKSHOP = "ACCEPT_WORKSHOP";
 
 export const GET_OFFERS = "GET_OFFERS";
 export const DECLINE_OFFER = "DECLINE_OFFER";
+export const GET_OPINIONS = "GET_OPINIONS";

@@ -41,17 +41,7 @@ class AcceptedWorkshopItem extends Component {
         <td>
           <Link to="">{workshop.owner}</Link>
         </td>
-        <td style={{ width: "10%" }}>
-          <Link
-            to="acceptedWorkshopList"
-            onClick={this.onAcceptWorkshopClick.bind(this, workshop.id)}
-            className="table-link"
-          >
-            <span className="fa-stack">
-              <i className="fa fa-square fa-stack-2x"></i>
-              <i className="fa fa-pencil fa-stack-1x fa-inverse"></i>
-            </span>
-          </Link>
+        <td className="text-center" style={{ width: "10%" }}>
           <Link to="acceptedWorkshopList" className="table-link danger">
             <span className="fa-stack">
               <i className="fa fa-square fa-stack-2x"></i>

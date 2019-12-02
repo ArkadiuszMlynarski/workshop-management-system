@@ -12,7 +12,7 @@ class TabContent extends Component {
 
     let filteredIssues = [];
 
-    if (issuesOffered.length > 1) {
+    if (issuesOffered.length >= 1) {
       for (let x = 0; x < issuesOffered.length; x++) {
         for (let y = 0; y < issuesOffered[x].offers.length; y++) {
           if (issuesOffered[x].offers[y].workshop.name === workshop.name) {
@@ -32,11 +32,26 @@ class TabContent extends Component {
     for (let i = 0; i < issuesAll.length; i++) {
       if (issuesAll[i].props.issue.status === "TO DO") {
         toDoIssues.push(issuesAll[i]);
-      } else if (issuesAll[i].props.issue.status === "IN PROGRESS") {
+      } else if (
+        issuesAll[i].props.issue.status === "IN PROGRESS" &&
+        issuesAll[i].props.issue.acceptedOffer.offeredByWorkshopId ===
+          workshop.id
+      ) {
         inProgressIssues.push(issuesAll[i]);
-      } else doneIssues.push(issuesAll[i]);
+      } else if (
+        issuesAll[i].props.issue.status === "DONE" &&
+        issuesAll[i].props.issue.acceptedOffer.offeredByWorkshopId ===
+          workshop.id
+      ) {
+        doneIssues.push(issuesAll[i]);
+      } else {
+        issuesAll.splice(i, 1);
+      }
     }
 
+    console.log("todo", toDoIssues);
+    console.log("inProgressIssues", inProgressIssues);
+    console.log("doneIssues", doneIssues);
     let checkToDo, checkInProgress, checkDone;
     if (toDoIssues.length === 0) checkToDo = "nav-item nav-link disabled";
     else checkToDo = "nav-item nav-link";
@@ -50,7 +65,7 @@ class TabContent extends Component {
     if (issuesAll.length === 0)
       checkAllResult = (
         <div className="alert alert-warning text-center" role="alert">
-          You don't have any issues reported yet
+          You didn't offer any repair offer yet
         </div>
       );
 
@@ -71,9 +86,9 @@ class TabContent extends Component {
               className={checkToDo}
               id="nav-todo-tab"
               data-toggle="tab"
-              href="#nav-profile"
+              href={`#nav-todo-${workshop.name.replace(/\s/g, "")}`}
               role="tab"
-              aria-controls="nav-profile"
+              aria-controls={`nav-todo-${workshop.name.replace(/\s/g, "")}`}
               aria-selected="false"
             >
               Pending offers{" "}
@@ -83,9 +98,9 @@ class TabContent extends Component {
               className={checkInProgress}
               id="nav-inprog-tab"
               data-toggle="tab"
-              href="#nav-contact"
+              href={`#nav-inprog-${workshop.name.replace(/\s/g, "")}`}
               role="tab"
-              aria-controls="nav-contact"
+              aria-controls={`nav-inprog-${workshop.name.replace(/\s/g, "")}`}
               aria-selected="false"
             >
               In Progress{" "}
@@ -97,9 +112,9 @@ class TabContent extends Component {
               className={checkDone}
               id="nav-done-tab"
               data-toggle="tab"
-              href="#nav-about"
+              href={`#nav-done-${workshop.name.replace(/\s/g, "")}`}
               role="tab"
-              aria-controls="nav-about"
+              aria-controls={`#nav-done-${workshop.name.replace(/\s/g, "")}`}
               aria-selected="false"
             >
               Done{" "}
@@ -118,25 +133,25 @@ class TabContent extends Component {
           </div>
           <div
             className="tab-pane show"
-            id="nav-profile"
+            id={`nav-todo-${workshop.name.replace(/\s/g, "")}`}
             role="tabpanel"
-            aria-labelledby="nav-profile-tab"
+            aria-labelledby={`nav-todo-${workshop.name.replace(/\s/g, "")}`}
           >
             {toDoIssues}
           </div>
           <div
             className="tab-pane fade"
-            id="nav-contact"
+            id={`nav-inprog-${workshop.name.replace(/\s/g, "")}`}
             role="tabpanel"
-            aria-labelledby="nav-contact-tab"
+            aria-labelledby={`nav-inprog-${workshop.name.replace(/\s/g, "")}`}
           >
             {inProgressIssues}
           </div>
           <div
             className="tab-pane fade"
-            id="nav-about"
+            id={`nav-done-${workshop.name.replace(/\s/g, "")}`}
             role="tabpanel"
-            aria-labelledby="nav-about-tab"
+            aria-labelledby={`nav-done-${workshop.name.replace(/\s/g, "")}`}
           >
             {doneIssues}
           </div>

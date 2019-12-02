@@ -14,7 +14,7 @@ class TabItem extends Component {
           aria-controls={workshop.name.replace(/\s/g, "")}
           aria-selected="false"
         >
-          <i class="icofont-food-cart"></i> {workshop.name}
+          <i class="fas fa-angle-right"></i> {workshop.name}
         </a>
       </li>
     );

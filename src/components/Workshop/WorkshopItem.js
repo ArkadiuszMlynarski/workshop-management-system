@@ -27,18 +27,18 @@ class WorkshopItem extends Component {
       );
 
     return (
-      <div style={{ paddingBottom: "10px" }}>
+      <div style={{ paddingBottom: "15px" }}>
         <section
           class="search-result-item"
           style={{ boxShadow: "0 1px 2.94px 0.06px rgba(4, 26, 55, 0.16)" }}
         >
-          <a class="image-link" href="#">
+          <div class="image-link" style={{ width: "170px" }}>
             <img
               class="image"
               src="https://cdn2.iconfinder.com/data/icons/mechanic-light/64/tools_repair_mechanican_car_repair_garage_car_workshop-512.png"
               alt="im"
             />
-          </a>
+          </div>
           <div class="search-result-item-body">
             <div class="row">
               <div class="col-sm-9">
@@ -49,17 +49,19 @@ class WorkshopItem extends Component {
                   {statusCheck}
                 </h4>
                 <p class="info">{workshop.address}</p>
-                <p class="description">{workshop.description}</p>
+                <p class="description">
+                  <b>Description: </b>
+                  {workshop.description}
+                </p>
               </div>
               <div class="col-sm-3 text-align-center">
                 <p class="fs-mini text-muted">
                   <b>Created</b>: {workshop.creationDate}
                 </p>
-                <p class="value3 mt-sm">TODO TODO</p>
 
                 <Link
                   to={`/workshopProfile/${workshop.id}`}
-                  class="btn btn-primary btn-info btn-sm"
+                  class="btn btn-primary btn-info btn-sm float-right"
                 >
                   View details
                 </Link>

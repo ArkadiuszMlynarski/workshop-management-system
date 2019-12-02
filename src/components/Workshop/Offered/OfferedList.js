@@ -28,7 +28,7 @@ class OfferedList extends Component {
                 <div class="osahan-user text-center">
                   <div class="osahan-user-media">
                     <div class="osahan-user-media-body">
-                      <h6 class="mb-2">Select workshop</h6>
+                      <h6 style={{ marginBottom: "0px" }}>Select workshop</h6>
                     </div>
                   </div>
                 </div>

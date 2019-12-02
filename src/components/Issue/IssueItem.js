@@ -20,10 +20,59 @@ class IssueItem extends Component {
     else if (issue.status === "DONE")
       statusCheck = <span className="badge badge-success">{issue.status}</span>;
 
+    let buttonsCheck = (
+      <Link to={`/issueBoard/${issue.issueId}`}>
+        <li className="list-group-item board">
+          <i className="fa fa-flag-checkered pr-1"> </i>Issue Board
+        </li>
+      </Link>
+    );
+    if (issue.status === "TO DO") {
+      buttonsCheck = (
+        <div>
+          <Link to={`/issueBoard/${issue.issueId}`}>
+            <li className="list-group-item board">
+              <i className="fa fa-flag-checkered pr-1"> </i>Issue Board
+            </li>
+          </Link>
+          <Link to={`/updateIssue/${issue.issueId}`}>
+            <li className="list-group-item update" style={{ color: "#18a2b9" }}>
+              <i className="fa fa-edit pr-1"></i>Update Issue Info
+            </li>
+          </Link>
+          <li
+            className="list-group-item delete"
+            onClick={this.onDeleteClick.bind(this, issue.issueId)}
+            style={{ color: "red" }}
+          >
+            <i className="fa fa-minus-circle pr-1"> </i>Delete Issue
+          </li>
+        </div>
+      );
+    }
+    if (issue.status === "DONE" && issue.opinioned === false) {
+      buttonsCheck = (
+        <div>
+          <Link to={`/issueBoard/${issue.issueId}`}>
+            <li className="list-group-item board">
+              <i className="fa fa-flag-checkered pr-1"> </i>Issue Board
+            </li>
+          </Link>
+          <Link
+            to={`/workshopProfile/${issue.acceptedOffer.offeredByWorkshopId}`}
+          >
+            <li className="list-group-item board" style={{ color: "#fbaf1e" }}>
+              <i className="far fa-star pr-1"></i>Rate workshop
+            </li>
+          </Link>
+        </div>
+      );
+    }
+
     return (
       <div className="container">
         <div className="card card-body bg-light mb-3">
-          <div className="row">
+          <div className="row" style={{ minHeight: "140px" }}>
             <div className="col-2">
               {statusCheck}
               <br />
@@ -46,24 +95,7 @@ class IssueItem extends Component {
               <p>{issue.description}</p>
             </div>
             <div className="col-md-4 d-none d-lg-block">
-              <ul className="list-group">
-                <Link to={`/issueBoard/${issue.issueId}`}>
-                  <li className="list-group-item board">
-                    <i className="fa fa-flag-checkered pr-1"> Issue Board </i>
-                  </li>
-                </Link>
-                <Link to={`/updateIssue/${issue.issueId}`}>
-                  <li className="list-group-item update">
-                    <i className="fa fa-edit pr-1"> Update Issue Info</i>
-                  </li>
-                </Link>
-                <li
-                  className="list-group-item delete"
-                  onClick={this.onDeleteClick.bind(this, issue.issueId)}
-                >
-                  <i className="fa fa-minus-circle pr-1"> Delete Issue</i>
-                </li>
-              </ul>
+              <ul className="list-group">{buttonsCheck}</ul>
             </div>
           </div>
         </div>

@@ -15,7 +15,6 @@ class UserProfile extends Component {
 
   render() {
     const { user } = this.props.user;
-    console.log(user.roles);
     let issueChecker, workshopChecker;
     if (user.issues.length === 0) {
       issueChecker = (
@@ -120,17 +119,6 @@ class UserProfile extends Component {
               <div className="card-box">
                 <h4 className="header-title mt-0">Personal Information</h4>
                 <div className="panel-body">
-                  <p className="text-muted font-13">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Quisque enim nunc, accumsan non tincidunt quis, luctus ac
-                    orci. Quisque porttitor scelerisque quam, vitae vehicula
-                    felis pulvinar tempor. Vestibulum consequat, urna a
-                    dignissim suscipit, erat ante pharetra nisi, eget viverra
-                    eros tellus ut tellus. Morbi at leo sed lorem vulputate
-                    maximus non vel mi. Quisque id lacinia risus. Aenean eu
-                    consequat ligula. Nam eget volutpat nisi, vel pharetra nunc.
-                    Curabitur sit amet purus ac leo elementum facilisis.
-                  </p>
                   <hr />
                   <div className="text-left">
                     <p className="text-muted font-13">

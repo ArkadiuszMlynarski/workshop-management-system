@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { getIssue, deleteIssue } from "../../../actions/issueActions";
+import {
+  getIssue,
+  deleteIssue,
+  markAsDone
+} from "../../../actions/issueActions";
 import { getOffersByIssue } from "../../../actions/offerActions";
 import "./IssueBoard.css";
 import { Link } from "react-router-dom";
@@ -11,6 +15,10 @@ class IssueBoard extends Component {
   onDeleteClick = id => {
     this.props.deleteIssue(id);
     window.location.href = "/";
+  };
+
+  onMarkDoneClick = id => {
+    this.props.markAsDone(id);
   };
 
   componentDidMount() {
@@ -24,31 +32,84 @@ class IssueBoard extends Component {
     const { user } = this.props.security;
     const { offers } = this.props.offer;
 
+    //logo checking
+    let logo;
+    if (issue.carModel !== undefined) {
+      if (issue.carModel.toLowerCase().includes("audi"))
+        logo = "http://www.androla.pl/images/60454.jpg";
+      else if (issue.carModel.toLowerCase().includes("peugeot"))
+        logo =
+          "https://www.carsbase.com/cache/storage/catalog/logos/40-gthumb-gwdata128-ghdata128.jpg";
+      else if (issue.carModel.toLowerCase().includes("nissan"))
+        logo =
+          "https://i.pinimg.com/236x/95/00/28/950028c68d92185270fab74a91e9b443--car-logos-car-brands-logos.jpg";
+      else if (issue.carModel.toLowerCase().includes("bmw"))
+        logo = "https://cdn.iconscout.com/icon/free/png-256/bmw-5-202750.png";
+      else if (issue.carModel.toLowerCase().includes("fiat"))
+        logo = "https://www.freeiconspng.com/uploads/fiat-logo-icon-png-3.png";
+      else if (issue.carModel.toLowerCase().includes("daewoo"))
+        logo = "https://www.iconninja.com/ico/128/daewoo-602113.ico";
+      else if (issue.carModel.toLowerCase().includes("renault"))
+        logo =
+          "https://cdn.breakerlink.com/images/car_logos/JPG/256/min/renault-min.jpg";
+      else if (issue.carModel.toLowerCase().includes("honda"))
+        logo =
+          "https://cdn.breakerlink.com/images/car_logos/JPG/256/min/honda-min.jpg";
+      else if (issue.carModel.toLowerCase().includes("mercedes"))
+        logo =
+          "https://cdn.iconscout.com/icon/free/png-256/mercedes-8-202855.png";
+      else {
+        logo = "https://img.icons8.com/nolan/2x/car.png";
+      }
+    }
+
+    //alert assignedTo empty
     let assignedTo = (
       <div className="alert alert-warning text-center" role="alert">
         This issue doesn't have any accepted offer yet
       </div>
     );
+
+    //assignedTo
     let acceptedCheck;
+    let doneButtonCheck;
+
     if (issue.acceptedOffer != null) {
+      //show markAsDone button if acceptedOffer is by loggedUser and status isnt done
+      if (
+        issue.acceptedOffer.offeredByUser === user.username &&
+        issue.status !== "DONE"
+      ) {
+        doneButtonCheck = (
+          <div className="card-hover-show">
+            <Link
+              className="btn btn-xs fs-10 btn-bold btn-success"
+              onClick={this.onMarkDoneClick.bind(this, issue.issueId)}
+            >
+              Change status to DONE
+            </Link>
+          </div>
+        );
+      }
+
       acceptedCheck = { pointerEvents: "none", opacity: "0.4" };
       assignedTo = (
         <div className="assign-team">
-          <div class="card b-1 hover-shadow mb-20">
-            <div class="media card-body" style={{ padding: "0.9rem" }}>
-              <div class="media-left pr-12">
+          <div className="card b-1 hover-shadow mb-20">
+            <div className="media card-body" style={{ padding: "0.9rem" }}>
+              <div className="media-left pr-12">
                 <img
-                  class="avatar avatar-xl no-radius"
+                  className="avatar avatar-xl no-radius"
                   src="https://cdn2.iconfinder.com/data/icons/mechanic-light/64/tools_repair_mechanican_car_repair_garage_car_workshop-512.png"
                   alt="..."
                 />
               </div>
-              <div class="media-body">
+              <div className="media-body">
                 <div>
                   <Link
                     to={`/workshopProfile/${issue.acceptedOffer.workshop.id}`}
                   >
-                    <span class="fs-20 pr-16">
+                    <span className="fs-20 pr-16">
                       {issue.acceptedOffer.workshop.name}
                     </span>
                   </Link>
@@ -62,40 +123,25 @@ class IssueBoard extends Component {
                   <b>Phone number</b>: {issue.acceptedOffer.workshop.telephone}
                 </small>
               </div>
-              <div class="media-right text-right d-none d-md-block">
-                <p class="fs-14 text-fade mb-12">
-                  <i class="fas fa-map-marker-alt"></i>{" "}
+              <div className="media-right text-right d-none d-md-block">
+                <p className="fs-14 text-fade mb-12">
+                  <i className="fas fa-map-marker-alt"></i>{" "}
                   {issue.acceptedOffer.workshop.address}
                 </p>
-                <p class="fs-14 text-fade mb-12">
-                  <i class="fas fa-money-bill"></i> Price: $
+                <p className="fs-14 text-fade mb-12">
+                  <i className="fas fa-money-bill"></i> Price: $
                   {issue.acceptedOffer.price}
                 </p>
               </div>
             </div>
-            <footer class="card-footer flexbox align-items-center">
+            <footer className="card-footer flexbox align-items-center">
               <div style={{ fontSize: "13px" }}>
                 <strong>Repair planned on:</strong>{" "}
                 <span>{issue.acceptedOffer.preferedDate}</span> <br />
                 <strong>Estimated repair time:</strong>{" "}
                 <span>{issue.acceptedOffer.estTime} days</span>
               </div>
-              <div class="card-hover-show">
-                <a class="btn btn-xs fs-10 btn-bold btn-info" href="#">
-                  Download CV
-                </a>
-                <a
-                  class="btn btn-xs fs-10 btn-bold btn-primary"
-                  href="#"
-                  data-toggle="modal"
-                  data-target="#modal-contact"
-                >
-                  Contact
-                </a>
-                <a class="btn btn-xs fs-10 btn-bold btn-warning" href="#">
-                  Delete
-                </a>
-              </div>
+              {doneButtonCheck}
             </footer>
           </div>
         </div>
@@ -106,8 +152,14 @@ class IssueBoard extends Component {
       <OfferItem key={offer.offerId} offer={offer} />
     ));
 
+    //if role WORKSHOPOWNER then see plus button
+    //and dont see plus, if already has offered or issue owner is logged user
     let addOfferCheck;
-    if (user.roles.some(e => e.authority === "ROLE_WORKSHOPOWNER")) {
+    if (
+      user.roles.some(e => e.authority === "ROLE_WORKSHOPOWNER") &&
+      offers.some(e => e.offeredByUser === user.username) === false &&
+      issue.issueLeader !== user.username
+    ) {
       addOfferCheck = (
         <Link
           to={`addOffer/${issue.issueId}`}
@@ -122,7 +174,7 @@ class IssueBoard extends Component {
     }
     let editableCheck;
 
-    if (issue.issueLeader === user.username) {
+    if (issue.issueLeader === user.username && issue.status === "TO DO") {
       editableCheck = (
         <div className="row">
           <div className="col-sm-12">
@@ -164,7 +216,7 @@ class IssueBoard extends Component {
                   <img
                     className="d-flex mr-3 rounded-circle"
                     alt="64x64"
-                    src="https://bootdey.com/img/Content/avatar/avatar2.png"
+                    src={logo}
                     style={{ width: "48px", height: "48px" }}
                   />
                   <div className="media-body">
@@ -274,7 +326,8 @@ IssueBoard.propTypes = {
   getOffersByIssue: PropTypes.func.isRequired,
   issue: PropTypes.object.isRequired,
   security: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired
+  errors: PropTypes.object.isRequired,
+  markAsDone: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -286,5 +339,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getIssue, deleteIssue, getOffersByIssue }
+  { getIssue, deleteIssue, getOffersByIssue, markAsDone }
 )(IssueBoard);

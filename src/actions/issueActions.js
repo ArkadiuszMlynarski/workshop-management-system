@@ -25,6 +25,16 @@ export const getIssues = () => async dispatch => {
   });
 };
 
+export const getIssuesToOpinion = id => async dispatch => {
+  const res = await axios.get(
+    `http://localhost:8081/issue/getAllToOpinion/${id}`
+  );
+  dispatch({
+    type: GET_ISSUES,
+    payload: res.data
+  });
+};
+
 export const getIssue = (id, history) => async dispatch => {
   try {
     const res = await axios.get(`http://localhost:8081/issue/findById/${id}`);
@@ -44,5 +54,23 @@ export const deleteIssue = id => async dispatch => {
       type: DELETE_ISSUE,
       payload: id
     });
+  }
+};
+
+export const markAsDone = id => async dispatch => {
+  if (window.confirm("Are you sure? This will change issue status to DONE.")) {
+    try {
+      await axios.post(`http://localhost:8081/issue/done/${id}`);
+      dispatch({
+        type: GET_ERRORS,
+        payload: {}
+      });
+      window.location.reload();
+    } catch (err) {
+      dispatch({
+        type: GET_ERRORS,
+        payload: err.response.data
+      });
+    }
   }
 };

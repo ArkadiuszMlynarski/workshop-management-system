@@ -2,7 +2,11 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import "./adminDashboard.css";
 import { connect } from "react-redux";
-import { getUsers, getWorkshops } from "../../actions/adminActions";
+import {
+  getUsers,
+  getWorkshops,
+  getReportedOpinions
+} from "../../actions/adminActions";
 import PropTypes from "prop-types";
 
 var divStyle = {
@@ -13,19 +17,31 @@ class adminDashboard extends Component {
   componentDidMount() {
     this.props.getUsers();
     this.props.getWorkshops();
+    this.props.getReportedOpinions();
   }
   render() {
     let pendingWorkshops = 0;
     let acceptedWorkshops = 0;
     const { users, workshops } = this.props.adminPanel;
+    const { opinions } = this.props.opinion;
+
     for (let i = 0; i < workshops.length; i++) {
       if (workshops[i].accepted === false) pendingWorkshops++;
       else if (workshops[i].accepted === true) acceptedWorkshops++;
     }
+
+    let [admins, workshopowners, userss] = [0, 0, 0];
+    for (let x = 0; x < users.length; x++) {
+      if (users[x].roles.some(e => e.name === "ADMIN")) admins++;
+      else if (users[x].roles.some(e => e.name === "WORKSHOPOWNER"))
+        workshopowners++;
+      else if (users[x].roles.some(e => e.name === "USER")) userss++;
+    }
+
     return (
       <div className="container" style={divStyle}>
         <div className="row">
-          <div className="col-md-4 col-xl-3">
+          <div className="col-md-4 col-xl-4">
             <Link to={`/admin/userList`}>
               <div className="card bg-c-blue order-card">
                 <div className="card-block">
@@ -34,15 +50,28 @@ class adminDashboard extends Component {
                     <i className="fa fa-users f-left"></i>
                     <span>{users.length}</span>
                   </h3>
+                  <br />
+                  <p style={{ marginBottom: "2px" }}>
+                    Administrators
+                    <span className="f-right">{admins}</span>
+                  </p>
+                  <p style={{ marginBottom: "2px" }}>
+                    Workshop owners
+                    <span className="f-right">{workshopowners}</span>
+                  </p>
+                  <p>
+                    Users
+                    <span className="f-right">{userss}</span>
+                  </p>
                 </div>
               </div>
             </Link>
           </div>
 
-          <div className="col-md-4 col-xl-3">
+          <div className="col-md-4 col-xl-4">
             <div className="card bg-c-green order-card">
               <div className="card-block">
-                <h5 className="m-b-20">Workshop manage</h5>
+                <h5 className="m-b-20">Workshop management</h5>
                 <h2 className="text-right">
                   <i className="fa fa-warehouse f-left"></i>
                   <span>{workshops.length}</span>
@@ -67,26 +96,41 @@ class adminDashboard extends Component {
             </div>
           </div>
 
-          <div className="col-md-4 col-xl-3">
+          <div className="col-md-4 col-xl-4">
             <div className="card bg-c-yellow order-card">
               <div className="card-block">
-                <h5 className="m-b-20">Issues management</h5>
+                <h5 className="m-b-20">Opinions</h5>
                 <h2 className="text-right">
-                  <i className="fa fa-rocket f-left"></i>
-                  <span>486</span>
+                  <i class="fas fa-star-half-alt f-left"></i>
+                  <span>{opinions.length}</span>
                 </h2>
                 <br></br>
-                <p className="m-b-0">
-                  Pending workshops<span className="f-right">351</span>
-                </p>
-                <p className="m-b-0">
-                  Accepted workhops<span className="f-right">351</span>
-                </p>
+                <Link to="/admin/reportedOpinions" style={{ color: "#FFF" }}>
+                  <p className="m-b-0">
+                    Reported reviews
+                    <span className="f-right">
+                      {
+                        opinions.filter(
+                          item =>
+                            item.reported === true && item.banned === false
+                        ).length
+                      }
+                    </span>
+                  </p>
+                </Link>
+                <Link to="/admin/bannedOpinions" style={{ color: "#FFF" }}>
+                  <p className="m-b-0">
+                    Banned reviews
+                    <span className="f-right">
+                      {opinions.filter(item => item.banned === true).length}
+                    </span>
+                  </p>
+                </Link>
               </div>
             </div>
           </div>
 
-          <div className="col-md-4 col-xl-3">
+          {/*<div className="col-md-4 col-xl-3">
             <div className="card bg-c-pink order-card">
               <div className="card-block">
                 <h6 className="m-b-20">Orders Received</h6>
@@ -99,7 +143,7 @@ class adminDashboard extends Component {
                 </p>
               </div>
             </div>
-          </div>
+    </div>*/}
         </div>
       </div>
     );
@@ -109,14 +153,16 @@ class adminDashboard extends Component {
 adminDashboard.propTypes = {
   adminPanel: PropTypes.object.isRequired,
   getUsers: PropTypes.func.isRequired,
-  getWorkshops: PropTypes.func.isRequired
+  getWorkshops: PropTypes.func.isRequired,
+  getReportedOpinions: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
-  adminPanel: state.adminPanel
+  adminPanel: state.adminPanel,
+  opinion: state.opinion
 });
 
 export default connect(
   mapStateToProps,
-  { getUsers, getWorkshops }
+  { getUsers, getWorkshops, getReportedOpinions }
 )(adminDashboard);
