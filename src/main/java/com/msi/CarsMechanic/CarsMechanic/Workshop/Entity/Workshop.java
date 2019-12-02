@@ -3,6 +3,7 @@ package com.msi.CarsMechanic.CarsMechanic.Workshop.Entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.msi.CarsMechanic.CarsMechanic.Offer.Entity.Offer;
+import com.msi.CarsMechanic.CarsMechanic.Opinion.Entity.Opinion;
 import com.msi.CarsMechanic.CarsMechanic.User.Entity.User;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -56,10 +57,22 @@ public class Workshop {
     @JsonIgnore
     private List<Offer> offers = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "workshop", orphanRemoval = true)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonIgnore
+    private List<Opinion> opinions = new ArrayList<>();
 
     private String owner;
 
     public Workshop() {
+    }
+
+    public List<Opinion> getOpinions() {
+        return opinions;
+    }
+
+    public void setOpinions(List<Opinion> opinions) {
+        this.opinions = opinions;
     }
 
     public List<Offer> getOffers() {

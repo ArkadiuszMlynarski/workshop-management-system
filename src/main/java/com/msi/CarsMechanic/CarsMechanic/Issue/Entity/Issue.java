@@ -3,6 +3,7 @@ package com.msi.CarsMechanic.CarsMechanic.Issue.Entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.msi.CarsMechanic.CarsMechanic.Offer.Entity.Offer;
+import com.msi.CarsMechanic.CarsMechanic.Opinion.Entity.Opinion;
 import com.msi.CarsMechanic.CarsMechanic.User.Entity.User;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -76,8 +77,31 @@ public class Issue {
     @JoinColumn(name = "acceptedOfferId", referencedColumnName = "offerId")
     private Offer acceptedOffer;
 
+    @OneToOne(mappedBy = "issue")
+    @JsonIgnore
+    private Opinion opinion;
+
+    @Column(columnDefinition = "boolean default false")
+    @JsonIgnore
+    private Boolean isOpinioned;
 
     public Issue() {
+    }
+
+    public Boolean getOpinioned() {
+        return isOpinioned;
+    }
+
+    public void setOpinioned(Boolean opinioned) {
+        isOpinioned = opinioned;
+    }
+
+    public Opinion getOpinion() {
+        return opinion;
+    }
+
+    public void setOpinion(Opinion opinion) {
+        this.opinion = opinion;
     }
 
     public Offer getAcceptedOffer() {

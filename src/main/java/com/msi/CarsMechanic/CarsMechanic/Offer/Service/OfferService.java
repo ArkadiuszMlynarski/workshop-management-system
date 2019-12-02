@@ -35,6 +35,17 @@ public class OfferService {
 
         //ITs to be added to a specific issue, issue != null, BL exists
         Issue issue = issueService.findByIssueId(id, username);
+
+        //Blokada, nie można dodać swojej oferty do swojego issue
+        if(issue.getIssueLeader().equals(username)){
+            throw new UserNotFoundException("You can't add offer to your own issue");
+        }
+
+        //Blokada, by moc oferowac pomoc tylko jednym warsztatem
+        if(offerRepository.findByOfferedByUserAndIssue_IssueId(username, id)!=null){
+            throw new UserNotFoundException("You already offered help for that issue.");
+        }
+
         //cannot add offers, if issue has accepted offer
         if(issue.getAcceptedOffer() != null){
             throw new UserNotFoundException("Issue with ID '" + issue.getIssueId() + "' has accepted offer already.");

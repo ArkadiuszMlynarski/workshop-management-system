@@ -3,6 +3,7 @@ package com.msi.CarsMechanic.CarsMechanic.User.Entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.msi.CarsMechanic.CarsMechanic.Issue.Entity.Issue;
+import com.msi.CarsMechanic.CarsMechanic.Opinion.Entity.Opinion;
 import com.msi.CarsMechanic.CarsMechanic.Workshop.Entity.Workshop;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -53,6 +54,11 @@ public class User {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<Workshop> workshops = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "user", orphanRemoval = true)
+    @Fetch(value = FetchMode.SUBSELECT)
+    @JsonIgnore
+    private List<Opinion> opinions = new ArrayList<>();
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;
@@ -67,6 +73,14 @@ public class User {
         return roles;
     }
     public User() {
+    }
+
+    public List<Opinion> getOpinions() {
+        return opinions;
+    }
+
+    public void setOpinions(List<Opinion> opinions) {
+        this.opinions = opinions;
     }
 
     public Long getId() {

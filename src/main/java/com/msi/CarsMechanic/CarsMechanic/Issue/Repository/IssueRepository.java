@@ -11,8 +11,11 @@ public interface IssueRepository extends CrudRepository<Issue, Long> {
 
     Issue findByIssueId(Long id);
 
-    Iterable<Issue> findAllByIssueLeader(String username);
+    Iterable<Issue> findAllByIssueLeaderOrderByIssueId(String username);
     Iterable<Issue> findAllByStatus(String status);
 
     Iterable<Issue> findAllByOffers_OfferedByUser(String username);
+
+    Iterable<Issue> findAllByIssueLeaderAndIsOpinionedIsFalseAndStatusAndAcceptedOffer_OfferedByWorkshopId(String username, String status, Long workshopId);
+
 }

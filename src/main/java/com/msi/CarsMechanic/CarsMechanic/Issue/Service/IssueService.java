@@ -31,6 +31,9 @@ public class IssueService {
     public Issue saveOrUpdateIssue(Issue issue, String username){
 
         if(issue.getIssueId() != null){
+            if(issue.getStatus().equals("IN PROGRESS") || issue.getStatus().equals("DONE")){
+                throw new IssueNotFoundException("Issue can't be updated, because its already in progress");
+            }
             Issue existingIssue = issueRepository.findByIssueId(issue.getIssueId());
             issue.setAcceptedOffer(existingIssue.getAcceptedOffer());  //przy edicie nie usuwa acceptedOffer
 
@@ -45,6 +48,7 @@ public class IssueService {
 
         issue.setUser(user);
         issue.setIssueLeader(user.getUsername());
+        issue.setOpinioned(false);
 
         //creating new issue
         if(issue.getIssueId()==null){
@@ -67,11 +71,18 @@ public class IssueService {
     }
 
     public void deleteIssueById(Long id, String username){
-        issueRepository.delete(findByIssueId(id, username));
+        Issue issue = findByIssueId(id, username);
+        if(!issue.getIssueLeader().equals(username)){
+            throw new IssueNotFoundException("Issue not found in your account");
+        }
+        if(issue.getStatus().equals("IN PROGRESS") || issue.getStatus().equals("DONE")){
+            throw new IssueNotFoundException("Issue can't be deleted, because its already in progress");
+        }
+        issueRepository.delete(issue);
     }
 
     public Iterable<Issue> findAllIssues(String username) {
-        return issueRepository.findAllByIssueLeader(username);
+        return issueRepository.findAllByIssueLeaderOrderByIssueId(username);
     }
 
 
@@ -92,6 +103,18 @@ public class IssueService {
 
 
         return issue;
+    }
+
+    public void markAsDone(Long issueId, String username){
+        Issue issue = issueRepository.findByIssueId(issueId);
+        if(issue==null || issue.getAcceptedOffer()==null || !issue.getAcceptedOffer().getWorkshop().getOwner().equals(username)){
+            throw new IssueNotFoundException("You aren't repairing that issue");
+        }
+        if(issue.getStatus().equals("DONE")){
+            throw new IssueNotFoundException("Issue already marked as DONE");
+        }
+        issue.setStatus("DONE");
+        issueRepository.save(issue);
     }
 
 

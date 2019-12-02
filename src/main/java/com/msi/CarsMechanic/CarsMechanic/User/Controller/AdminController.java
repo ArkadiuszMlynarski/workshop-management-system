@@ -1,5 +1,8 @@
 package com.msi.CarsMechanic.CarsMechanic.User.Controller;
 
+import com.msi.CarsMechanic.CarsMechanic.Opinion.Entity.Opinion;
+import com.msi.CarsMechanic.CarsMechanic.Opinion.Repository.OpinionRepository;
+import com.msi.CarsMechanic.CarsMechanic.Opinion.Service.OpinionService;
 import com.msi.CarsMechanic.CarsMechanic.User.Entity.User;
 import com.msi.CarsMechanic.CarsMechanic.User.Service.UserService;
 import com.msi.CarsMechanic.CarsMechanic.Workshop.Entity.Workshop;
@@ -19,10 +22,13 @@ import java.security.Principal;
 public class AdminController {
 
     @Autowired
-    private UserService userService;
+     UserService userService;
 
     @Autowired
-    private WorkshopService workshopService;
+     WorkshopService workshopService;
+
+    @Autowired
+     OpinionService opinionService;
 
 
     // USERS
@@ -79,4 +85,30 @@ public class AdminController {
         workshopService.deleteWorkshopById(id, principal.getName());
         return new ResponseEntity<String>("Workshop with ID: " + id + " deleted.", HttpStatus.OK);
     }
+
+    //OPINIONS
+    @PatchMapping("/banOpinion/{opinionId}")
+    public ResponseEntity<?> banOpinion(@PathVariable Long opinionId, Principal principal){
+        Opinion opinion = opinionService.banOpinion(opinionId, principal.getName());
+        return new ResponseEntity<>(opinion, HttpStatus.OK);
+    }
+
+    @PatchMapping("/unbanOpinion/{opinionId}")
+    public ResponseEntity<?> unbanOpinion(@PathVariable Long opinionId, Principal principal){
+        Opinion opinion = opinionService.unbanOpinion(opinionId, principal.getName());
+        return new ResponseEntity<>(opinion, HttpStatus.OK);
+    }
+
+    @PatchMapping("/unreportOpinion/{opinionId}")
+    public ResponseEntity<?> unreportOpinion(@PathVariable Long opinionId, Principal principal){
+        Opinion opinion = opinionService.unreportOpinion(opinionId, principal.getName());
+        return new ResponseEntity<>(opinion, HttpStatus.OK);
+    }
+
+    @GetMapping("/getReportedOpinions")
+    public Iterable<Opinion> getReportedOpinions(Principal principal) {
+        return opinionService.getAllReportedOpinions(principal.getName());
+    }
+
+
 }

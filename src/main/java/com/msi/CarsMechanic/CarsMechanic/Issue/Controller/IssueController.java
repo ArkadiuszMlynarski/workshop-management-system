@@ -1,6 +1,7 @@
 package com.msi.CarsMechanic.CarsMechanic.Issue.Controller;
 
 import com.msi.CarsMechanic.CarsMechanic.Issue.Entity.Issue;
+import com.msi.CarsMechanic.CarsMechanic.Issue.Repository.IssueRepository;
 import com.msi.CarsMechanic.CarsMechanic.Issue.Service.IssueService;
 import com.msi.CarsMechanic.CarsMechanic.Workshop.Service.MapValidationErrorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class IssueController {
 
     @Autowired
     private IssueService issueService;
+    @Autowired
+    private IssueRepository issueRepository;
     @Autowired
     private MapValidationErrorService mapValidationErrorService;
 
@@ -45,9 +48,20 @@ public class IssueController {
         return issueService.findAllIssues(principal.getName());
     }
 
+    @GetMapping("/getAllToOpinion/{workshopId}")
+    public Iterable<Issue> getAllIssuesForOpinion(@PathVariable Long workshopId, Principal principal){
+        return issueRepository.findAllByIssueLeaderAndIsOpinionedIsFalseAndStatusAndAcceptedOffer_OfferedByWorkshopId(principal.getName(), "DONE", workshopId);
+    }
+
     @GetMapping("/findById/{id}")
     public ResponseEntity<?> getIssueById(@PathVariable Long id, Principal principal){
         Issue issue = issueService.findByIssueId(id, principal.getName());
         return new ResponseEntity<>(issue, HttpStatus.OK);
+    }
+
+    @PostMapping("/done/{issueId}")
+    public ResponseEntity<?> markDone(@PathVariable Long issueId, Principal principal) {
+        issueService.markAsDone(issueId, principal.getName());
+        return new ResponseEntity<String>("Issue with ID: " + issueId + " marked as DONE.", HttpStatus.OK);
     }
 }
