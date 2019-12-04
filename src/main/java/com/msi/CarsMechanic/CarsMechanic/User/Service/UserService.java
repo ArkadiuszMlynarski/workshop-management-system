@@ -124,6 +124,12 @@ public class UserService {
             return pagedResult.getContent();
         }
 
+    public Iterable<User> findAllPagedUsers(Integer pageNo, Integer pageSize, String sortBy, String username){
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<User> pagedResult = userRepository.findAll(paging);
+        return pagedResult;
+    }
+
     public void deleteUserById(Long id, String username){
         userRepository.delete(findByUserId(id, username));
     }

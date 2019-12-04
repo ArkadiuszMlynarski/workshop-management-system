@@ -1,8 +1,6 @@
 package com.msi.CarsMechanic.CarsMechanic.Issue.Service;
 
-import com.msi.CarsMechanic.CarsMechanic.Issue.Entity.Backlog;
 import com.msi.CarsMechanic.CarsMechanic.Issue.Entity.Issue;
-import com.msi.CarsMechanic.CarsMechanic.Issue.Repository.BacklogRepository;
 import com.msi.CarsMechanic.CarsMechanic.Issue.Repository.IssueRepository;
 import com.msi.CarsMechanic.CarsMechanic.Issue.exceptions.IssueIdException;
 import com.msi.CarsMechanic.CarsMechanic.Issue.exceptions.IssueNotFoundException;
@@ -18,9 +16,6 @@ public class IssueService {
 
     @Autowired
     private IssueRepository issueRepository;
-
-    @Autowired
-    private BacklogRepository backlogRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -52,17 +47,10 @@ public class IssueService {
 
         //creating new issue
         if(issue.getIssueId()==null){
-            Backlog backlog = new Backlog();
-            issue.setBacklog(backlog);
-            backlog.setIssue(issue);
-            backlog.setIssue_id(issue.getIssueId());
+
             issue.setStatus("TO DO");
         }
 
-        //updating existing issue
-        if(issue.getIssueId()!=null){
-            issue.setBacklog(backlogRepository.findByTaskid(issue.getIssueId()));
-        }
 
         if(issue.getDateFrom().after(issue.getDateTo())){
             throw new IssueNotFoundException("Start date is after end date");

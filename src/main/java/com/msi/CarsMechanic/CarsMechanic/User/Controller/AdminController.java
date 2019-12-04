@@ -30,15 +30,25 @@ public class AdminController {
     @Autowired
      OpinionService opinionService;
 
+    @Autowired
+    OpinionRepository opinionRepository;
 
     // USERS
 
     @GetMapping("/getUsers")
     public  Iterable<User> getAllUsers(@RequestParam(defaultValue = "0") Integer pageNo,
-                                       @RequestParam(defaultValue = "5") Integer pageSize,
+                                       @RequestParam(defaultValue = "20") Integer pageSize,
                                        @RequestParam(defaultValue = "id") String sortBy,
                                        Principal principal){
         return userService.findAllUsers(pageNo, pageSize, sortBy, principal.getName());
+    }
+
+    @GetMapping("/getPagedUsers")
+    public  Iterable<User> getAllPagedUsers(@RequestParam(defaultValue = "0") Integer pageNo,
+                                       @RequestParam(defaultValue = "20") Integer pageSize,
+                                       @RequestParam(defaultValue = "id") String sortBy,
+                                       Principal principal){
+        return userService.findAllPagedUsers(pageNo, pageSize, sortBy, principal.getName());
     }
 
     @DeleteMapping("/deleteUserById/{id}")
@@ -67,11 +77,29 @@ public class AdminController {
     }
 
 
+
+
     // WORKSHOPS
 
     @GetMapping("/getWorkshops")
     public Iterable<Workshop> getAllWorkshops(Principal principal) {
         return workshopService.findAllWorkshops(principal.getName());
+    }
+
+    @GetMapping("/getPagedAcceptedWorkshops")
+    public  Iterable<Workshop> getAllPagedAcceptedWorkshops(@RequestParam(defaultValue = "0") Integer pageNo,
+                                            @RequestParam(defaultValue = "20") Integer pageSize,
+                                            @RequestParam(defaultValue = "id") String sortBy,
+                                            Principal principal){
+        return workshopService.findAllPagedAcceptedWorkshops(pageNo, pageSize, sortBy, principal.getName());
+    }
+
+    @GetMapping("/getPagedPendingWorkshops")
+    public  Iterable<Workshop> getAllPagedPendingWorkshops(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                    @RequestParam(defaultValue = "20") Integer pageSize,
+                                                    @RequestParam(defaultValue = "id") String sortBy,
+                                                    Principal principal){
+        return workshopService.findAllPagedPendingWorkshops(pageNo, pageSize, sortBy, principal.getName());
     }
 
     @PatchMapping("/acceptWorkshop/{id}")
@@ -85,6 +113,8 @@ public class AdminController {
         workshopService.deleteWorkshopById(id, principal.getName());
         return new ResponseEntity<String>("Workshop with ID: " + id + " deleted.", HttpStatus.OK);
     }
+
+
 
     //OPINIONS
     @PatchMapping("/banOpinion/{opinionId}")
@@ -108,6 +138,27 @@ public class AdminController {
     @GetMapping("/getReportedOpinions")
     public Iterable<Opinion> getReportedOpinions(Principal principal) {
         return opinionService.getAllReportedOpinions(principal.getName());
+    }
+
+    @GetMapping("/getPagedReportedOpinions")
+    public  Iterable<Opinion> getAllPagedReportedOpinions(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                           @RequestParam(defaultValue = "20") Integer pageSize,
+                                                           @RequestParam(defaultValue = "opinionId") String sortBy,
+                                                           Principal principal){
+        return opinionService.findAllPagedReportedOpinions(pageNo, pageSize, sortBy, principal.getName());
+    }
+
+    @GetMapping("/getPagedBannedOpinions")
+    public  Iterable<Opinion> getAllPagedBannedOpinions(@RequestParam(defaultValue = "0") Integer pageNo,
+                                                          @RequestParam(defaultValue = "20") Integer pageSize,
+                                                          @RequestParam(defaultValue = "opinionId") String sortBy,
+                                                          Principal principal){
+        return opinionService.findAllPagedBannedOpinions(pageNo, pageSize, sortBy, principal.getName());
+    }
+
+    @GetMapping("/getOpinionsByUserId/{id}")
+    public Iterable<Opinion> getOpinionsByUserId(@PathVariable Long id, Principal principal) {
+        return opinionRepository.findAllByUser_Id(id);
     }
 
 

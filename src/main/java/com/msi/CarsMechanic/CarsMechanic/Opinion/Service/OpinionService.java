@@ -10,9 +10,12 @@ import com.msi.CarsMechanic.CarsMechanic.User.Entity.User;
 import com.msi.CarsMechanic.CarsMechanic.User.Repository.RoleRepository;
 import com.msi.CarsMechanic.CarsMechanic.User.Repository.UserRepository;
 import com.msi.CarsMechanic.CarsMechanic.Workshop.Entity.Workshop;
-import com.msi.CarsMechanic.CarsMechanic.Workshop.Repository.WorkshopRepository;
 import com.msi.CarsMechanic.CarsMechanic.Workshop.Service.WorkshopService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -139,5 +142,17 @@ public class OpinionService {
 
     public Iterable<Opinion> getAllReportedOpinions(String username){
         return opinionRepository.findAllByIsReported(true);
+    }
+
+    public Iterable<Opinion> findAllPagedReportedOpinions(Integer pageNo, Integer pageSize, String sortBy, String username){
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Opinion> pagedResult = opinionRepository.findByIsReportedTrueAndIsBannedFalse(paging);
+        return pagedResult;
+    }
+
+    public Iterable<Opinion> findAllPagedBannedOpinions(Integer pageNo, Integer pageSize, String sortBy, String username){
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Opinion> pagedResult = opinionRepository.findByIsBannedTrue(paging);
+        return pagedResult;
     }
 }

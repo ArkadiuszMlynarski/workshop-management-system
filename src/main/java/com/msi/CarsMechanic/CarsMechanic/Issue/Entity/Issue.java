@@ -58,9 +58,7 @@ public class Issue {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Belgrade")
     private Date dateTo;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "issue")
-    @JsonIgnore
-    private Backlog backlog;
+
 
     @ManyToOne
     @JoinColumn(name="user_id")
@@ -201,13 +199,6 @@ public class Issue {
         this.creationDate = creationDate;
     }
 
-    public Backlog getBacklog() {
-        return backlog;
-    }
-
-    public void setBacklog(Backlog backlog) {
-        this.backlog = backlog;
-    }
 
     public User getUser() {
         return user;

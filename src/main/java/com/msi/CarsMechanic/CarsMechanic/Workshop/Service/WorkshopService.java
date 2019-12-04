@@ -8,6 +8,10 @@ import com.msi.CarsMechanic.CarsMechanic.User.Repository.UserRepository;
 import com.msi.CarsMechanic.CarsMechanic.Workshop.Entity.Workshop;
 import com.msi.CarsMechanic.CarsMechanic.Workshop.Repository.WorkshopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -57,6 +61,18 @@ public class WorkshopService {
 
     public Iterable<Workshop> findAllWorkshops(String username){
         return workshopRepository.findAll();
+    }
+
+    public Iterable<Workshop> findAllPagedAcceptedWorkshops(Integer pageNo, Integer pageSize, String sortBy, String username){
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Workshop> pagedResult = workshopRepository.findByAcceptedTrue(paging);
+        return pagedResult;
+    }
+
+    public Iterable<Workshop> findAllPagedPendingWorkshops(Integer pageNo, Integer pageSize, String sortBy, String username){
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<Workshop> pagedResult = workshopRepository.findByAcceptedFalse(paging);
+        return pagedResult;
     }
 
     public Iterable<Workshop> findAllWorkshopsByOwner(String username){
