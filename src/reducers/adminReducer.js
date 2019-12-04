@@ -4,13 +4,16 @@ import {
   FIND_USER,
   GET_WORKSHOPS,
   DELETE_WORKSHOP,
-  ACCEPT_WORKSHOP
+  ACCEPT_WORKSHOP,
+  GET_OPINIONS,
+  GET_PAGEDOPINIONS
 } from "../actions/types";
 
 const initialState = {
-  users: [],
+  users: { content: [] },
   user: { issues: [], roles: [], workshops: [] },
-  workshops: []
+  workshops: { content: [] },
+  opinions: { content: [] }
 };
 
 export default function(state = initialState, action) {
@@ -30,7 +33,11 @@ export default function(state = initialState, action) {
     case DELETE_USER:
       return {
         ...state,
-        users: state.users.filter(user => user.id !== action.payload)
+        users: {
+          content: state.users.content.filter(
+            user => user.id !== action.payload
+          )
+        }
       };
 
     case GET_WORKSHOPS:
@@ -39,20 +46,30 @@ export default function(state = initialState, action) {
         workshops: action.payload
       };
 
+    case GET_PAGEDOPINIONS:
+      return {
+        ...state,
+        opinions: action.payload
+      };
+
     case DELETE_WORKSHOP:
       return {
         ...state,
-        workshops: state.workshops.filter(
-          workshop => workshop.id !== action.payload
-        )
+        workshops: {
+          content: state.workshops.content.filter(
+            workshop => workshop.id !== action.payload
+          )
+        }
       };
 
     case ACCEPT_WORKSHOP:
       return {
         ...state,
-        workshops: state.workshops.filter(
-          workshop => workshop.id !== action.payload
-        )
+        workshops: {
+          content: state.workshops.content.filter(
+            workshop => workshop.id !== action.payload
+          )
+        }
       };
 
     default:

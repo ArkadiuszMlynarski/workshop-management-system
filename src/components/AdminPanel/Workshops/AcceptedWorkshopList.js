@@ -4,23 +4,82 @@ import AcceptedWorkshopItem from "./AcceptedWorkshopItem";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { getWorkshops } from "../../../actions/adminActions";
+import { getPagedAcceptedWorkshops } from "../../../actions/adminActions";
 
 class AcceptedWorkshopList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      workshops: {},
+      pageNo: 0,
+      totalPages: 0,
+      workshopsInOnePage: 5
+    };
+
+    this.changePage = this.changePage.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.workshops) {
+      this.setState({
+        workshops: nextProps.workshops.content,
+        pageNo: nextProps.workshops.number,
+        totalPages: nextProps.workshops.totalPages
+      });
+    }
+  }
+
   componentDidMount() {
-    this.props.getWorkshops();
+    this.props.getPagedAcceptedWorkshops(this.state.workshopsInOnePage, 0);
+  }
+
+  generatePagination(pageNo, totalPages) {
+    let arr = [];
+
+    arr.push(<Link onClick={() => this.changePage(0)}>&laquo; </Link>);
+
+    for (let i = 0; i < totalPages; i++) {
+      if (i === pageNo) {
+        arr.push(
+          <Link key={i} className="active" onClick={() => this.changePage(i)}>
+            {i + 1}{" "}
+          </Link>
+        );
+      } else {
+        arr.push(
+          <Link key={i} onClick={() => this.changePage(i)}>
+            {i + 1}
+          </Link>
+        );
+      }
+    }
+
+    arr.push(
+      <Link onClick={() => this.changePage(totalPages - 1)}> &raquo;</Link>
+    );
+
+    return arr;
+  }
+
+  changePage(pageNo) {
+    this.props.getPagedAcceptedWorkshops(this.state.workshopsInOnePage, pageNo);
   }
 
   render() {
     const { workshops } = this.props.adminPanel;
 
-    const workshopss = workshops.map(workshop => (
-      <AcceptedWorkshopItem key={workshop.id} workshop={workshop} />
-    ));
+    let workshopss;
     let acceptedWorkshops = [];
-    for (let i = 0; i < workshopss.length; i++) {
-      if (workshopss[i].props.workshop.accepted === true) {
-        acceptedWorkshops.push(workshopss[i]);
+    if (workshops.content !== undefined) {
+      workshopss = workshops.content.map(workshop => (
+        <AcceptedWorkshopItem key={workshop.id} workshop={workshop} />
+      ));
+
+      for (let i = 0; i < workshopss.length; i++) {
+        if (workshopss[i].props.workshop.accepted === true) {
+          acceptedWorkshops.push(workshopss[i]);
+        }
       }
     }
     return (
@@ -35,7 +94,7 @@ class AcceptedWorkshopList extends Component {
               Back
             </Link>
             <h3 className="text-center">
-              Accepted workshops ({acceptedWorkshops.length})
+              Accepted workshops ({workshops.totalElements})
             </h3>
             <div className="main-box clearfix">
               <div className="table-responsive">
@@ -68,32 +127,12 @@ class AcceptedWorkshopList extends Component {
                   <tbody>{acceptedWorkshops}</tbody>
                 </table>
               </div>
-              <ul className="pagination pull-right">
-                <li>
-                  <Link to="#">
-                    <i className="fa fa-chevron-left"></i>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">1</Link>
-                </li>
-                <li>
-                  <Link to="#">2</Link>
-                </li>
-                <li>
-                  <Link to="#">3</Link>
-                </li>
-                <li>
-                  <Link to="#">4</Link>
-                </li>
-                <li>
-                  <Link to="#">5</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    <i className="fa fa-chevron-right"></i>
-                  </Link>
-                </li>
+              <ul className="pull-right text-center">
+                <span style={{ fontSize: "13px", color: "grey" }}>
+                  Page: {workshops.number + 1} of {workshops.totalPages}
+                </span>
+                <br />
+                <span>{this.generatePagination(0, workshops.totalPages)}</span>
               </ul>
             </div>
           </div>
@@ -105,7 +144,7 @@ class AcceptedWorkshopList extends Component {
 
 AcceptedWorkshopList.propTypes = {
   adminPanel: PropTypes.object.isRequired,
-  getWorkshops: PropTypes.func.isRequired
+  getPagedAcceptedWorkshops: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -114,5 +153,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getWorkshops }
+  { getPagedAcceptedWorkshops }
 )(AcceptedWorkshopList);

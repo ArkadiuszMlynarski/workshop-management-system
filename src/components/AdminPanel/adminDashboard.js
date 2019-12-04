@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./adminDashboard.css";
 import { connect } from "react-redux";
 import {
-  getUsers,
+  getPagedUsers,
   getWorkshops,
   getReportedOpinions
 } from "../../actions/adminActions";
@@ -15,14 +15,15 @@ var divStyle = {
 
 class adminDashboard extends Component {
   componentDidMount() {
-    this.props.getUsers();
+    this.props.getPagedUsers(10000, 0);
     this.props.getWorkshops();
     this.props.getReportedOpinions();
   }
   render() {
     let pendingWorkshops = 0;
     let acceptedWorkshops = 0;
-    const { users, workshops } = this.props.adminPanel;
+    const { users } = this.props.adminPanel;
+    const { workshops } = this.props.adminPanel;
     const { opinions } = this.props.opinion;
 
     for (let i = 0; i < workshops.length; i++) {
@@ -31,11 +32,11 @@ class adminDashboard extends Component {
     }
 
     let [admins, workshopowners, userss] = [0, 0, 0];
-    for (let x = 0; x < users.length; x++) {
-      if (users[x].roles.some(e => e.name === "ADMIN")) admins++;
-      else if (users[x].roles.some(e => e.name === "WORKSHOPOWNER"))
+    for (let x = 0; x < users.content.length; x++) {
+      if (users.content[x].roles.some(e => e.name === "ADMIN")) admins++;
+      else if (users.content[x].roles.some(e => e.name === "WORKSHOPOWNER"))
         workshopowners++;
-      else if (users[x].roles.some(e => e.name === "USER")) userss++;
+      else if (users.content[x].roles.some(e => e.name === "USER")) userss++;
     }
 
     return (
@@ -48,7 +49,7 @@ class adminDashboard extends Component {
                   <h5 className="m-b-20">Users management</h5>
                   <h3 className="text-right">
                     <i className="fa fa-users f-left"></i>
-                    <span>{users.length}</span>
+                    <span>{users.content.length}</span>
                   </h3>
                   <br />
                   <p style={{ marginBottom: "2px" }}>
@@ -101,7 +102,7 @@ class adminDashboard extends Component {
               <div className="card-block">
                 <h5 className="m-b-20">Opinions</h5>
                 <h2 className="text-right">
-                  <i class="fas fa-star-half-alt f-left"></i>
+                  <i className="fas fa-star-half-alt f-left"></i>
                   <span>{opinions.length}</span>
                 </h2>
                 <br></br>
@@ -152,7 +153,7 @@ class adminDashboard extends Component {
 
 adminDashboard.propTypes = {
   adminPanel: PropTypes.object.isRequired,
-  getUsers: PropTypes.func.isRequired,
+  getPagedUsers: PropTypes.func.isRequired,
   getWorkshops: PropTypes.func.isRequired,
   getReportedOpinions: PropTypes.func.isRequired
 };
@@ -164,5 +165,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getUsers, getWorkshops, getReportedOpinions }
+  { getPagedUsers, getWorkshops, getReportedOpinions }
 )(adminDashboard);

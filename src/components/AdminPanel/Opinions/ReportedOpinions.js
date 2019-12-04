@@ -2,29 +2,75 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { getReportedOpinions } from "../../../actions/adminActions";
+import { getPagedReportedOpinions } from "../../../actions/adminActions";
 import ReportedOpinionItem from "./ReportedOpinionItem";
 
 class ReportedOpinions extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      opinions: {},
+      pageNo: 0,
+      totalPages: 0,
+      opinionsInOnePage: 5
+    };
+
+    this.changePage = this.changePage.bind(this);
+  }
+
   componentDidMount() {
-    this.props.getReportedOpinions();
+    this.props.getPagedReportedOpinions(this.state.opinionsInOnePage, 0);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.opinions) {
+      this.setState({
+        opinions: nextProps.opinions.content,
+        pageNo: nextProps.opinions.number,
+        totalPages: nextProps.opinions.totalPages
+      });
+    }
+  }
+
+  generatePagination(pageNo, totalPages) {
+    let arr = [];
+
+    arr.push(<Link onClick={() => this.changePage(0)}>&laquo; </Link>);
+
+    for (let i = 0; i < totalPages; i++) {
+      if (i === pageNo) {
+        arr.push(
+          <Link key={i} className="active" onClick={() => this.changePage(i)}>
+            {i + 1}{" "}
+          </Link>
+        );
+      } else {
+        arr.push(
+          <Link key={i} onClick={() => this.changePage(i)}>
+            {i + 1}
+          </Link>
+        );
+      }
+    }
+
+    arr.push(
+      <Link onClick={() => this.changePage(totalPages - 1)}> &raquo;</Link>
+    );
+
+    return arr;
+  }
+
+  changePage(pageNo) {
+    this.props.getPagedReportedOpinions(this.state.opinionsInOnePage, pageNo);
   }
 
   render() {
-    const { opinions } = this.props.opinion;
+    const { opinions } = this.props.adminPanel;
 
-    const opinionss = opinions.map(opinion => (
+    const opinionss = opinions.content.map(opinion => (
       <ReportedOpinionItem key={opinion.opinionId} opinion={opinion} />
     ));
-    let reportedOpinions = [];
-    for (let i = 0; i < opinionss.length; i++) {
-      if (
-        opinionss[i].props.opinion.reported === true &&
-        opinionss[i].props.opinion.banned === false
-      ) {
-        reportedOpinions.push(opinionss[i]);
-      }
-    }
 
     return (
       <div className="container">
@@ -38,7 +84,7 @@ class ReportedOpinions extends Component {
               Back
             </Link>
             <h3 className="text-center">
-              Reported reviews ({reportedOpinions.length})
+              Reported reviews ({opinions.totalElements})
             </h3>
             <div className="main-box clearfix">
               <div className="table-responsive">
@@ -63,35 +109,15 @@ class ReportedOpinions extends Component {
                       </th>
                     </tr>
                   </thead>
-                  <tbody>{reportedOpinions}</tbody>
+                  <tbody>{opinionss}</tbody>
                 </table>
               </div>
-              <ul className="pagination pull-right">
-                <li>
-                  <Link to="#">
-                    <i className="fa fa-chevron-left"></i>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">1</Link>
-                </li>
-                <li>
-                  <Link to="#">2</Link>
-                </li>
-                <li>
-                  <Link to="#">3</Link>
-                </li>
-                <li>
-                  <Link to="#">4</Link>
-                </li>
-                <li>
-                  <Link to="#">5</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    <i className="fa fa-chevron-right"></i>
-                  </Link>
-                </li>
+              <ul className="pull-right text-center">
+                <span style={{ fontSize: "13px", color: "grey" }}>
+                  Page: {opinions.number + 1} of {opinions.totalPages}
+                </span>
+                <br />
+                <span>{this.generatePagination(0, opinions.totalPages)}</span>
               </ul>
             </div>
           </div>
@@ -102,15 +128,15 @@ class ReportedOpinions extends Component {
 }
 
 ReportedOpinions.propTypes = {
-  getReportedOpinions: PropTypes.func.isRequired,
-  opinion: PropTypes.object.isRequired
+  getPagedReportedOpinions: PropTypes.func.isRequired,
+  adminPanel: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  opinion: state.opinion
+  adminPanel: state.adminPanel
 });
 
 export default connect(
   mapStateToProps,
-  { getReportedOpinions }
+  { getPagedReportedOpinions }
 )(ReportedOpinions);

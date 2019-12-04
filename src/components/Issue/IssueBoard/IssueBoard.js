@@ -55,6 +55,8 @@ class IssueBoard extends Component {
       else if (issue.carModel.toLowerCase().includes("honda"))
         logo =
           "https://cdn.breakerlink.com/images/car_logos/JPG/256/min/honda-min.jpg";
+      else if (issue.carModel.toLowerCase().includes("toyota"))
+        logo = "https://cdn.iconscout.com/icon/free/png-256/toyota-202913.png";
       else if (issue.carModel.toLowerCase().includes("mercedes"))
         logo =
           "https://cdn.iconscout.com/icon/free/png-256/mercedes-8-202855.png";

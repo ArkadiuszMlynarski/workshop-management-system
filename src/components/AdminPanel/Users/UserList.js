@@ -1,14 +1,69 @@
 import React, { Component } from "react";
 import UserItem from "./UserItem";
 import { connect } from "react-redux";
-import { getUsers } from "../../../actions/adminActions";
+import { getPagedUsers } from "../../../actions/adminActions";
 import PropTypes from "prop-types";
 import "./UserList.css";
 import { Link } from "react-router-dom";
 
 class UserList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      users: {},
+      pageNo: 0,
+      totalPages: 0,
+      usersInOnePage: 5
+    };
+
+    this.changePage = this.changePage.bind(this);
+  }
+
   componentDidMount() {
-    this.props.getUsers();
+    this.props.getPagedUsers(this.state.usersInOnePage, 0);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.users) {
+      this.setState({
+        users: nextProps.users.content,
+        pageNo: nextProps.users.number,
+        totalPages: nextProps.users.totalPages
+      });
+    }
+  }
+
+  generatePagination(pageNo, totalPages) {
+    let arr = [];
+
+    arr.push(<Link onClick={() => this.changePage(0)}>&laquo; </Link>);
+
+    for (let i = 0; i < totalPages; i++) {
+      if (i === pageNo) {
+        arr.push(
+          <Link key={i} className="active" onClick={() => this.changePage(i)}>
+            {i + 1}{" "}
+          </Link>
+        );
+      } else {
+        arr.push(
+          <Link key={i} onClick={() => this.changePage(i)}>
+            {i + 1}
+          </Link>
+        );
+      }
+    }
+
+    arr.push(
+      <Link onClick={() => this.changePage(totalPages - 1)}> &raquo;</Link>
+    );
+
+    return arr;
+  }
+
+  changePage(pageNo) {
+    this.props.getPagedUsers(this.state.usersInOnePage, pageNo);
   }
 
   render() {
@@ -23,6 +78,10 @@ class UserList extends Component {
           <div className="col-lg-12">
             <div className="main-box clearfix">
               <div className="table-responsive">
+                <Link to="/admin/" className="float-left">
+                  Back
+                </Link>
+
                 <table className="table user-list">
                   <thead>
                     <tr>
@@ -50,39 +109,19 @@ class UserList extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.map(user => (
+                    {users.content.map(user => (
                       <UserItem key={user.id} user={user} />
                     ))}
                   </tbody>
                 </table>
+                <ul className="pull-right text-center">
+                  <span style={{ fontSize: "13px", color: "grey" }}>
+                    Page: {users.number + 1} of {users.totalPages}
+                  </span>
+                  <br />
+                  <span>{this.generatePagination(0, users.totalPages)}</span>
+                </ul>
               </div>
-              <ul className="pagination pull-right">
-                <li>
-                  <Link to="#">
-                    <i className="fa fa-chevron-left"></i>
-                  </Link>
-                </li>
-                <li>
-                  <Link to="#">1</Link>
-                </li>
-                <li>
-                  <Link to="#">2</Link>
-                </li>
-                <li>
-                  <Link to="#">3</Link>
-                </li>
-                <li>
-                  <Link to="#">4</Link>
-                </li>
-                <li>
-                  <Link to="#">5</Link>
-                </li>
-                <li>
-                  <Link to="#">
-                    <i className="fa fa-chevron-right"></i>
-                  </Link>
-                </li>
-              </ul>
             </div>
           </div>
         </div>
@@ -93,7 +132,7 @@ class UserList extends Component {
 
 UserList.propTypes = {
   adminPanel: PropTypes.object.isRequired,
-  getUsers: PropTypes.func.isRequired
+  getPagedUsers: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -102,5 +141,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getUsers }
+  { getPagedUsers }
 )(UserList);

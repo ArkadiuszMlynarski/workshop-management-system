@@ -18,7 +18,7 @@ class Header extends Component {
         <ul className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link className="nav-link" to="/dashboard">
-              Dashboard
+              <i className="far fa-list-alt"></i> Your Issues
             </Link>
           </li>
         </ul>
@@ -43,7 +43,7 @@ class Header extends Component {
         <ul className="navbar-nav mr-auto">
           <li className="nav-item">
             <Link className="nav-link" to="/dashboard">
-              Dashboard
+              <i className="far fa-list-alt"></i> Your Issues
             </Link>
           </li>
         </ul>

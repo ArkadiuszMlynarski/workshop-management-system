@@ -149,7 +149,7 @@ class OpinionItem extends Component {
         <div className="reviews-members pt-4 pb-3" style={opinionIsBanned}>
           <div className="media">
             <img
-              alt="Generic placeholder image"
+              alt="Generic placeholder"
               src="https://c7.uihere.com/icons/373/764/998/chat-communication-conversation-discuss-message-speech-talk-icon-34c85b65867c25b8b154fb23a1f99a63.png"
               className="mr-3 rounded-pill"
               style={{ transform: "scaleX(-1)" }}
@@ -162,11 +162,7 @@ class OpinionItem extends Component {
                 >
                   Rating: <div>{stars}</div>
                 </span>
-                <h6 className="mb-1">
-                  <a className="text-black" href="#">
-                    {opinion.user.fullName}
-                  </a>
-                </h6>
+                <h6 className="mb-1">{opinion.user.fullName}</h6>
                 <p style={{ color: "#797979" }}>{opinion.creationDate} </p>
               </div>
               <div

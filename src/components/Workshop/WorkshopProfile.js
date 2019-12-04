@@ -244,9 +244,9 @@ class WorkshopProfile extends Component {
     }
 
     let emptyOpinionsAlert;
-    if (opinions.length == 0) {
+    if (opinions.length === 0) {
       emptyOpinionsAlert = (
-        <div class="alert alert-warning text-center" role="alert">
+        <div className="alert alert-warning text-center" role="alert">
           There are no opinions yet
         </div>
       );
@@ -398,26 +398,20 @@ class WorkshopProfile extends Component {
                       </div>
                     </div>
                     <div className="gold-members p-4">
-                      <a href="#"></a>
                       <div className="media">
-                        <a href="#">
-                          <img
-                            className="mr-4"
-                            src="https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/information.png"
-                            alt="Generic placeholder image"
-                          />
-                        </a>
+                        <img
+                          className="mr-4"
+                          src="https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/512x512/information.png"
+                          alt="Generic placeholder"
+                        />
                         <div className="media-body">
-                          <a href="#">
-                            <span className="float-right text-info">
-                              Created at {workshop.creationDate}{" "}
-                              <i className="icofont-check-circled text-success"></i>
-                            </span>
-                          </a>
+                          <span className="float-right text-info">
+                            Created at {workshop.creationDate}{" "}
+                            <i className="icofont-check-circled text-success"></i>
+                          </span>
                           <h6 className="mb-2">
-                            <a href="#"></a>
                             <a
-                              href="#"
+                              href={`/workshopProfile/${workshop.id}`}
                               className="text-black"
                               style={{ fontSize: "25px" }}
                             >
@@ -471,19 +465,27 @@ class WorkshopProfile extends Component {
                         <br />
                         <div style={{ color: "orange", fontSize: "20px" }}>
                           <i
-                            class={avgRate >= 1 ? "fas fa-star" : "far fa-star"}
+                            className={
+                              avgRate >= 1 ? "fas fa-star" : "far fa-star"
+                            }
                           ></i>
                           <i
-                            class={avgRate >= 2 ? "fas fa-star" : "far fa-star"}
+                            className={
+                              avgRate >= 2 ? "fas fa-star" : "far fa-star"
+                            }
                           ></i>
                           <i
-                            class={avgRate >= 3 ? "fas fa-star" : "far fa-star"}
+                            className={
+                              avgRate >= 3 ? "fas fa-star" : "far fa-star"
+                            }
                           ></i>
                           <i
-                            class={avgRate >= 4 ? "fas fa-star" : "far fa-star"}
+                            className={
+                              avgRate >= 4 ? "fas fa-star" : "far fa-star"
+                            }
                           ></i>
                           <i
-                            class={
+                            className={
                               avgRate >= 4.5 ? "fas fa-star" : "far fa-star"
                             }
                           ></i>

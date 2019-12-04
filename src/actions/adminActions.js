@@ -7,11 +7,22 @@ import {
   GET_WORKSHOPS,
   DELETE_WORKSHOP,
   ACCEPT_WORKSHOP,
-  GET_OPINIONS
+  GET_OPINIONS,
+  GET_PAGEDOPINIONS
 } from "./types";
 
 export const getUsers = () => async dispatch => {
-  const res = await axios.get("http://localhost:8081/admin/getUsers");
+  const res = await axios.get(`http://localhost:8081/admin/getUsers`);
+  dispatch({
+    type: GET_USERS,
+    payload: res.data
+  });
+};
+
+export const getPagedUsers = (pageSize, pageNo) => async dispatch => {
+  const res = await axios.get(
+    `http://localhost:8081/admin/getPagedUsers?pageSize=${pageSize}&pageNo=${pageNo}`
+  );
   dispatch({
     type: GET_USERS,
     payload: res.data
@@ -78,6 +89,32 @@ export const adminEditUser = (user, history) => async dispatch => {
 
 export const getWorkshops = () => async dispatch => {
   const res = await axios.get("http://localhost:8081/admin/getWorkshops");
+  dispatch({
+    type: GET_WORKSHOPS,
+    payload: res.data
+  });
+};
+
+export const getPagedAcceptedWorkshops = (
+  pageSize,
+  pageNo
+) => async dispatch => {
+  const res = await axios.get(
+    `http://localhost:8081/admin/getPagedAcceptedWorkshops?pageSize=${pageSize}&pageNo=${pageNo}`
+  );
+  dispatch({
+    type: GET_WORKSHOPS,
+    payload: res.data
+  });
+};
+
+export const getPagedPendingWorkshops = (
+  pageSize,
+  pageNo
+) => async dispatch => {
+  const res = await axios.get(
+    `http://localhost:8081/admin/getPagedPendingWorkshops?pageSize=${pageSize}&pageNo=${pageNo}`
+  );
   dispatch({
     type: GET_WORKSHOPS,
     payload: res.data
@@ -167,6 +204,39 @@ export const unreportOpinion = opinionId => async dispatch => {
 export const getReportedOpinions = () => async dispatch => {
   const res = await axios.get(
     "http://localhost:8081/admin/getReportedOpinions"
+  );
+  dispatch({
+    type: GET_OPINIONS,
+    payload: res.data
+  });
+};
+
+export const getPagedReportedOpinions = (
+  pageSize,
+  pageNo
+) => async dispatch => {
+  const res = await axios.get(
+    `http://localhost:8081/admin/getPagedReportedOpinions?pageSize=${pageSize}&pageNo=${pageNo}`
+  );
+  dispatch({
+    type: GET_PAGEDOPINIONS,
+    payload: res.data
+  });
+};
+
+export const getPagedBannedOpinions = (pageSize, pageNo) => async dispatch => {
+  const res = await axios.get(
+    `http://localhost:8081/admin/getPagedBannedOpinions?pageSize=${pageSize}&pageNo=${pageNo}`
+  );
+  dispatch({
+    type: GET_PAGEDOPINIONS,
+    payload: res.data
+  });
+};
+
+export const getOpinionsByUserId = id => async dispatch => {
+  const res = await axios.get(
+    `http://localhost:8081/admin/getOpinionsByUserId/${id}`
   );
   dispatch({
     type: GET_OPINIONS,

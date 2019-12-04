@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { findUser } from "../../../actions/adminActions";
+import { findUser, getOpinionsByUserId } from "../../../actions/adminActions";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import "./UserProfile.css";
@@ -11,10 +11,12 @@ class UserProfile extends Component {
   componentDidMount() {
     const { id } = this.props.match.params;
     this.props.findUser(id, this.props.history);
+    this.props.getOpinionsByUserId(id);
   }
 
   render() {
     const { user } = this.props.user;
+    const { opinions } = this.props.opinion;
     let issueChecker, workshopChecker;
     if (user.issues.length === 0) {
       issueChecker = (
@@ -153,6 +155,25 @@ class UserProfile extends Component {
                     <h2 className="" data-plugin="counterup">
                       {user.issues.length}
                     </h2>
+                    <span className="badge badge-danger">
+                      {
+                        user.issues.filter(item => item.status === "TO DO")
+                          .length
+                      }
+                    </span>
+                    <span className="badge badge-warning">
+                      {
+                        user.issues.filter(
+                          item => item.status === "IN PROGRESS"
+                        ).length
+                      }
+                    </span>
+                    <span className="badge badge-success">
+                      {
+                        user.issues.filter(item => item.status === "DONE")
+                          .length
+                      }
+                    </span>
                   </div>
                 </div>
                 {
@@ -184,12 +205,23 @@ class UserProfile extends Component {
                 <div className="col-sm-4">
                   <div className="card-box tilebox-one">
                     <i className="icon-rocket float-right text-muted"></i>
-                    <h6 className="text-muted text-uppercase mt-0">TODO</h6>
+                    <h6 className="text-muted text-uppercase mt-0">Opinions</h6>
                     <h2 className="" data-plugin="counterup">
-                      1,890
+                      {opinions.length}
                     </h2>
-                    <span className="badge badge-custom">+89% </span>
-                    <span className="text-muted">TODO</span>
+                    <span className="badge badge-custom">
+                      Reported{" "}
+                      {
+                        opinions.filter(
+                          item =>
+                            item.reported === true && item.banned === false
+                        ).length
+                      }
+                    </span>{" "}
+                    <span className="badge badge-danger">
+                      Banned{" "}
+                      {opinions.filter(item => item.banned === true).length}
+                    </span>
                   </div>
                 </div>
                 {
@@ -227,14 +259,17 @@ class UserProfile extends Component {
 
 UserProfile.propTypes = {
   findUser: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired
+  getOpinionsByUserId: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  opinion: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  user: state.adminPanel
+  user: state.adminPanel,
+  opinion: state.opinion
 });
 
 export default connect(
   mapStateToProps,
-  { findUser }
+  { findUser, getOpinionsByUserId }
 )(UserProfile);
